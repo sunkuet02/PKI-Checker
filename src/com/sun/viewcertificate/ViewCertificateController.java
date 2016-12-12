@@ -8,21 +8,30 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import org.bouncycastle.asn1.*;
+import org.bouncycastle.asn1.ocsp.OCSPObjectIdentifiers;
+import org.bouncycastle.asn1.x509.*;
+import org.bouncycastle.asn1.x509.Extension;
+import org.bouncycastle.x509.extension.X509ExtensionUtil;
 import sun.security.provider.certpath.OCSP;
 import sun.security.util.DerValue;
+import sun.security.util.ObjectIdentifier;
+import sun.security.x509.PKIXExtensions;
 import utils.Actions;
 
+import javax.security.cert.CertificateException;
 import javax.swing.*;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.net.URI;
+import java.security.cert.*;
 import java.security.cert.Certificate;
-import java.security.cert.CertificateFactory;
-import java.security.cert.X509Certificate;
+import java.util.ArrayList;
 import java.util.Date;
-import org.bouncycastle.asn1.ASN1InputStream;
-import org.bouncycastle.asn1.ASN1Sequence;
+import java.util.Enumeration;
+import java.util.List;
 
 public class ViewCertificateController {
     public static Stage stage = new Stage();
@@ -60,9 +69,8 @@ public class ViewCertificateController {
 
     @FXML
     private void viewDetailsAction(ActionEvent event) {
-        X509Certificate certificate = null;
         try {
-            certificate = actions.getCertificateFromFile(txtCertificate.getText());
+            X509Certificate certificate = actions.getCertificateFromFile(txtCertificate.getText());
             txtViewCertificateDetails.setText(certificate.toString());
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, "Check if the link is correct or a valid certificate file");
